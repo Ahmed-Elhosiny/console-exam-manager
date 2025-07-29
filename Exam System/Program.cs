@@ -1,0 +1,282 @@
+﻿namespace Exam_System
+{
+    internal class Program
+    {
+        protected const string tabs = "\t\t\t\t\t\t\t";
+        protected const string stars = $"{tabs}*****************************************\n";
+        public static List<Exam> Pexams = [], Fexams = [];
+        public Program()
+        {
+            Pexams = []; Fexams = [];
+        }
+        static void Main()
+        {
+            MainMenu();
+
+            int examType;
+            do
+            {
+                Console.Write($"{tabs}Enter Exam type (or Press 3 to exit): ");
+            } while (!int.TryParse(Console.ReadLine(), out examType) || examType < 1 || examType > 3);
+            if (examType == 3) Exit();
+
+
+            ExamMenu(examType);
+
+            int choice;
+            do
+            {
+                Console.Write($"{tabs}Choose an option (or Press 4 to exit): ");
+            } while (!int.TryParse(Console.ReadLine(), out choice) || choice < 1 || choice > 4);
+
+
+
+
+
+            if (choice == 1)
+            {
+                Thread.Sleep(300);
+                Console.WriteLine($"\n\n{stars}{tabs}\tCreating a new exam form  \n{stars}");
+                Thread.Sleep(300);
+
+                Subject subject = Subject.GetSubject();
+                Exam exam;
+
+                int time;
+                do
+                {
+                    Console.Write($"{tabs}Enter Exam Time in minutes (15 : 45): ");
+                } while (!int.TryParse(Console.ReadLine(), out time) || time < 15 || time > 45);
+
+                Console.Write($"\n{tabs}Enter Number of Questions (1 : 100): ");
+                int questionsNumber;
+                do
+                {
+                    if (!int.TryParse(Console.ReadLine(), out questionsNumber) || questionsNumber < 1 || questionsNumber > 100)
+                        Console.Write($"{tabs}Please enter number of questions (1 : 100): ");
+                    else break;
+                } while (true);
+
+                if (examType == 1)
+                {
+                    exam = new PracticeExam(time, subject, questionsNumber);
+                    exam.AddQuestions(questionsNumber, "Practice");
+                    Pexams.Add(exam);
+                }
+                else
+                {
+                    exam = new FinalExam(time, subject, questionsNumber);
+                    exam.AddQuestions(questionsNumber, "Final");
+                    Fexams.Add(exam);
+                }
+
+
+                Main();
+                return;
+            }
+            else if (choice == 2)
+            {
+                if (examType == 1)
+                {
+
+                    if (Pexams.Count == 0)
+                    {
+                        Console.WriteLine($"\n{tabs}You Can't take practice exams right now...\n\n");
+                        Console.Write($"{tabs}Press any key to go to the main menu...");
+                        Console.ReadLine();
+                    }
+                    else
+                    {
+                        int examIdx = new Random().Next(Pexams.Count);
+                        int n = Pexams[examIdx].QuestionsNumber;
+                        Pexams[examIdx].Answers = new List<string>(Enumerable.Repeat("0", n));
+
+                        Thread.Sleep(1000);
+                        Console.WriteLine($"\n\n\n\n{stars}{Pexams[examIdx]}\n{stars}");
+                        for (int i = 0; i < n; ++i)
+                        {
+                            Console.WriteLine($"{tabs}{i + 1}) {Pexams[examIdx].Questions[i]}");
+                            string answer;
+
+                            if (Pexams[examIdx].Questions[i] is TrueOrFalseQuestion)
+                            {
+                                do
+                                {
+                                    Console.Write($"\n{tabs}Enter your answer (1 for true and 2 for false): ");
+                                    answer = Console.ReadLine().Trim();
+
+                                } while (!int.TryParse(answer, out int num) || num < 1 || num > 2);
+                            }
+                            else if (Pexams[examIdx].Questions[i] is ChooseOneQuestion)
+                            {
+                                do
+                                {
+                                    Console.Write($"\n{tabs}Enter your answer (1 : 4): ");
+                                    answer = Console.ReadLine().Trim();
+                                } while (!int.TryParse(answer, out int num) || num < 1 || num > 4);
+                            }
+                            else
+                            {
+                                do
+                                {
+                                    Console.Write($"\n{tabs}Enter your answer(s) (1 : 4): ");
+                                    answer = Console.ReadLine().Trim();
+                                    if (string.IsNullOrWhiteSpace(answer))
+                                        continue;
+
+                                    string[] answers = answer.Split(',');
+                                    bool valid = answers.All(ans =>
+                                        int.TryParse(ans.Trim(), out int num) && num >= 1 && num <= 4
+                                    );
+
+                                    if (valid) break;
+                                    Console.WriteLine($"{tabs}Invalid input. Please enter numbers between 1 and 4, separated by commas if multiple.");
+                                } while (true);
+                            }
+
+                            Pexams[examIdx].Answers[i] = answer;
+                            Console.WriteLine(stars);
+                        }
+
+                        Thread.Sleep(1000);
+                        Console.WriteLine($"{tabs}Thank You.");
+                        Thread.Sleep(1000);
+                        Console.WriteLine(stars);
+
+                        Pexams[examIdx].ShowExam();
+
+                        Thread.Sleep(1000);
+                        Console.Write($"{tabs}Press any key to go to the main menu...");
+                        Console.ReadLine();
+                    }
+                }
+                else
+                {
+                    if (Fexams.Count == 0)
+                    {
+                        Console.WriteLine($"\n{tabs}You Can't take final exams right now...\n\n");
+                        Console.Write($"{tabs}Press any key to go to the main menu...");
+                        Console.ReadLine();
+                    }
+                    else
+                    {
+                        int examIdx = new Random().Next(Fexams.Count);
+                        int n = Fexams[examIdx].QuestionsNumber;
+                        Fexams[examIdx].Answers = new List<string>(Enumerable.Repeat("0", n));
+
+                        Thread.Sleep(1000);
+                        Console.WriteLine($"\n\n\n\n{stars}{Fexams[examIdx]}\n{stars}");
+                        for (int i = 0; i < n; ++i)
+                        {
+                            Console.WriteLine($"{tabs}{i + 1}) {Fexams[examIdx].Questions[i]}");
+                            string answer;
+                            if (Fexams[examIdx].Questions[i] is TrueOrFalseQuestion)
+                            {
+                                do
+                                {
+                                    Console.Write($"\n{tabs}Enter your answer (1 for true and 2 for false): ");
+                                    answer = Console.ReadLine().Trim();
+
+                                } while (!int.TryParse(answer, out int num) || num < 1 || num > 2);
+                            }
+                            else if (Fexams[examIdx].Questions[i] is ChooseOneQuestion)
+                            {
+                                do
+                                {
+                                    Console.Write($"\n{tabs}Enter your answer (1 : 4): ");
+                                    answer = Console.ReadLine().Trim();
+                                } while (!int.TryParse(answer, out int num) || num < 1 || num > 4);
+                            }
+                            else
+                            {
+                                do
+                                {
+                                    Console.Write($"\n{tabs}Enter your answer(s) (1 : 4): ");
+                                    answer = Console.ReadLine().Trim();
+                                    if (string.IsNullOrWhiteSpace(answer))
+                                        continue;
+
+                                    string[] answers = answer.Split(',');
+                                    bool valid = answers.All(ans =>
+                                        int.TryParse(ans.Trim(), out int num) && num >= 1 && num <= 4
+                                    );
+
+                                    if (valid) break;
+                                    Console.WriteLine($"{tabs}Invalid input. Please enter numbers between 1 and 4, separated by commas if multiple.");
+                                } while (true);
+                            }
+
+                            Fexams[examIdx].Answers[i] = answer;
+                            Console.WriteLine(stars);
+                        }
+
+                        Thread.Sleep(1000);
+                        Console.WriteLine($"{tabs}Thank You.");
+                        Console.WriteLine(stars);
+
+                        Thread.Sleep(1000);
+
+                        Fexams[examIdx].ShowExam();
+
+                        Thread.Sleep(1000);
+                        Console.Write($"{tabs}Press any key to go to the main menu...");
+                        Console.ReadLine();
+                    }
+                }
+
+                Main();
+                return;
+            }
+            else if (choice == 3) Main();
+            else Exit();
+
+
+
+
+
+        }
+
+        static void MainMenu()
+        {
+            Thread.Sleep(200);
+            Console.WriteLine($"\n{stars}{tabs}\tExamination System Menu\t\t\n{stars}");
+            Console.WriteLine($"{tabs}1) Practice Exam\n{tabs}2) Final Exam\n{tabs}3) Exit\n");
+        }
+        static void ExamMenu(int examType)
+        {
+            if (examType == 1)
+            {
+                Thread.Sleep(200);
+                Console.WriteLine($"\n{stars}{tabs}\tPractice Exam Menu\t\t\n{stars}");
+                Console.WriteLine($"{tabs}1) Create Practice Exam\n{tabs}2) Take Practice Exam\n{tabs}3) Back to Main Menu\n{tabs}4)Exit\n");
+            }
+            else if (examType == 2)
+            {
+                Thread.Sleep(200);
+                Console.WriteLine($"\n{stars}{tabs}\tFinal Exam Menu\t\t\t\n{stars}");
+                Console.WriteLine($"{tabs}1) Create Final Exam\n{tabs}2) Take Final Exam\n{tabs}3) Back to Main Menu\n{tabs}4)Exit\n");
+            }
+        }
+
+        static void Exit()
+        {
+            Console.WriteLine($"\n{tabs}Exiting the program. Goodbye!");
+            Thread.Sleep(2000);
+            Environment.Exit(0);
+        }
+        public static void LoadingMessage(string message)
+        {
+
+            Console.Write($"{stars}\n{tabs}\t{message}");
+            for (int dot = 0; dot < 3; dot++)
+            {
+                Thread.Sleep(500);             // half‑second per dot
+                Console.Write(".");
+            }
+            Console.WriteLine($"\n{tabs}\t\tDone!\n\n\n");
+            Thread.Sleep(1000);
+        }
+
+    }
+}
+
