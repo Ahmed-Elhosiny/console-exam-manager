@@ -1,6 +1,6 @@
 ﻿namespace Exam_System
 {
-    public abstract class Exam
+    public abstract class Exam : Program
     {
         protected const string tabs = "\t\t\t\t\t\t\t";
         protected const string stars = $"{tabs}*****************************************\n";
@@ -181,6 +181,7 @@
                 Console.Write($"{tabs}Enter Question Marks (1 : 3): ");
                 do
                 {
+                
                     if (!int.TryParse(Console.ReadLine(), out marks) || marks < 1 || marks > 3)
                         Console.Write($"{tabs}Please enter a valid number of marks (1 : 3): ");
                     else break;
