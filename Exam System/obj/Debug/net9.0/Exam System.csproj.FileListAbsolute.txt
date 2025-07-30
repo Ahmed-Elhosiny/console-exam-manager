@@ -12,3 +12,4 @@ E:\ITI\Projects\Exam System\Exam System\obj\Debug\net9.0\refint\Exam System.dll
 E:\ITI\Projects\Exam System\Exam System\obj\Debug\net9.0\Exam System.pdb
 E:\ITI\Projects\Exam System\Exam System\obj\Debug\net9.0\Exam System.genruntimeconfig.cache
 E:\ITI\Projects\Exam System\Exam System\obj\Debug\net9.0\ref\Exam System.dll
+E:\ITI\Projects\Exam System\Exam System\obj\Debug\net9.0\Exam System.sourcelink.json

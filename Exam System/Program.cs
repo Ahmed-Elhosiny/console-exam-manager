@@ -4,11 +4,8 @@
     {
         protected const string tabs = "\t\t\t\t\t\t\t";
         protected const string stars = $"{tabs}*****************************************\n";
-        public static List<Exam> Pexams = [], Fexams = [];
-        public Program()
-        {
-            Pexams = []; Fexams = [];
-        }
+        public readonly static List<Exam> Pexams = [], Fexams = [];
+
         static void Main()
         {
             MainMenu();
@@ -16,7 +13,7 @@
             int examType;
             do
             {
-                Console.Write($"{tabs}Enter Exam type (or Press 3 to exit): ");
+                WriteWithIndent("Enter Exam type (or Press 3 to exit): ");
             } while (!int.TryParse(Console.ReadLine(), out examType) || examType < 1 || examType > 3);
             if (examType == 3) Exit();
 
@@ -26,7 +23,7 @@
             int choice;
             do
             {
-                Console.Write($"{tabs}Choose an option (or Press 4 to exit): ");
+                WriteWithIndent("Choose an option (or Press 4 to exit): ");
             } while (!int.TryParse(Console.ReadLine(), out choice) || choice < 1 || choice > 4);
 
 
@@ -45,17 +42,15 @@
                 int time;
                 do
                 {
-                    Console.Write($"{tabs}Enter Exam Time in minutes (15 : 45): ");
+                    WriteWithIndent("Enter Exam Time in minutes (15 : 45): ");
                 } while (!int.TryParse(Console.ReadLine(), out time) || time < 15 || time > 45);
 
-                Console.Write($"\n{tabs}Enter Number of Questions (1 : 100): ");
+
                 int questionsNumber;
                 do
                 {
-                    if (!int.TryParse(Console.ReadLine(), out questionsNumber) || questionsNumber < 1 || questionsNumber > 100)
-                        Console.Write($"{tabs}Please enter number of questions (1 : 100): ");
-                    else break;
-                } while (true);
+                    WriteWithIndent("Enter Number of Questions (1 : 100): ");
+                } while (!int.TryParse(Console.ReadLine(), out questionsNumber) || questionsNumber < 1 || questionsNumber > 100);
 
                 if (examType == 1)
                 {
@@ -81,8 +76,8 @@
 
                     if (Pexams.Count == 0)
                     {
-                        Console.WriteLine($"\n{tabs}You Can't take practice exams right now...\n\n");
-                        Console.Write($"{tabs}Press any key to go to the main menu...");
+                        WriteWithIndent("You Can't take practice exams right now...\n\n");
+                        WriteWithIndent("Press any key to go to the main menu...");
                         Console.ReadLine();
                     }
                     else
@@ -95,14 +90,14 @@
                         Console.WriteLine($"\n\n\n\n{stars}{Pexams[examIdx]}\n{stars}");
                         for (int i = 0; i < n; ++i)
                         {
-                            Console.WriteLine($"{tabs}{i + 1}) {Pexams[examIdx].Questions[i]}");
+                            WriteWithIndent($"{i + 1}) {Pexams[examIdx].Questions[i]}\n");
                             string answer;
 
                             if (Pexams[examIdx].Questions[i] is TrueOrFalseQuestion)
                             {
                                 do
                                 {
-                                    Console.Write($"\n{tabs}Enter your answer (1 for true and 2 for false): ");
+                                    WriteWithIndent("Enter Your answer (1 for true and 2 for false): ");
                                     answer = Console.ReadLine().Trim();
 
                                 } while (!int.TryParse(answer, out int num) || num < 1 || num > 2);
@@ -111,7 +106,7 @@
                             {
                                 do
                                 {
-                                    Console.Write($"\n{tabs}Enter your answer (1 : 4): ");
+                                    WriteWithIndent("Enter your answer (1 : 4): ");
                                     answer = Console.ReadLine().Trim();
                                 } while (!int.TryParse(answer, out int num) || num < 1 || num > 4);
                             }
@@ -119,7 +114,7 @@
                             {
                                 do
                                 {
-                                    Console.Write($"\n{tabs}Enter your answer(s) (1 : 4): ");
+                                    WriteWithIndent("Enter your answer(s) (1 : 4): ");
                                     answer = Console.ReadLine().Trim();
                                     if (string.IsNullOrWhiteSpace(answer))
                                         continue;
@@ -130,7 +125,7 @@
                                     );
 
                                     if (valid) break;
-                                    Console.WriteLine($"{tabs}Invalid input. Please enter numbers between 1 and 4, separated by commas if multiple.");
+                                    WriteWithIndent("Invalid input. Please enter numbers between 1 and 4, separated by commas if multiple.");
                                 } while (true);
                             }
 
@@ -139,14 +134,14 @@
                         }
 
                         Thread.Sleep(1000);
-                        Console.WriteLine($"{tabs}Thank You.");
+                        WriteWithIndent("Thank You.\n");
                         Thread.Sleep(1000);
                         Console.WriteLine(stars);
 
                         Pexams[examIdx].ShowExam();
 
                         Thread.Sleep(1000);
-                        Console.Write($"{tabs}Press any key to go to the main menu...");
+                        WriteWithIndent("Press any key to go to the main menu...");
                         Console.ReadLine();
                     }
                 }
@@ -154,8 +149,8 @@
                 {
                     if (Fexams.Count == 0)
                     {
-                        Console.WriteLine($"\n{tabs}You Can't take final exams right now...\n\n");
-                        Console.Write($"{tabs}Press any key to go to the main menu...");
+                        WriteWithIndent("You Can't take final exams right now...\n\n");
+                        WriteWithIndent("Press any key to go to the main menu...");
                         Console.ReadLine();
                     }
                     else
@@ -168,13 +163,13 @@
                         Console.WriteLine($"\n\n\n\n{stars}{Fexams[examIdx]}\n{stars}");
                         for (int i = 0; i < n; ++i)
                         {
-                            Console.WriteLine($"{tabs}{i + 1}) {Fexams[examIdx].Questions[i]}");
+                            WriteWithIndent($"{i + 1}) {Fexams[examIdx].Questions[i]}");
                             string answer;
                             if (Fexams[examIdx].Questions[i] is TrueOrFalseQuestion)
                             {
                                 do
                                 {
-                                    Console.Write($"\n{tabs}Enter your answer (1 for true and 2 for false): ");
+                                    WriteWithIndent("Enter your answer (1 for true and 2 for false): ");
                                     answer = Console.ReadLine().Trim();
 
                                 } while (!int.TryParse(answer, out int num) || num < 1 || num > 2);
@@ -183,7 +178,7 @@
                             {
                                 do
                                 {
-                                    Console.Write($"\n{tabs}Enter your answer (1 : 4): ");
+                                    WriteWithIndent("Enter your answer (1 : 4): ");
                                     answer = Console.ReadLine().Trim();
                                 } while (!int.TryParse(answer, out int num) || num < 1 || num > 4);
                             }
@@ -191,7 +186,7 @@
                             {
                                 do
                                 {
-                                    Console.Write($"\n{tabs}Enter your answer(s) (1 : 4): ");
+                                    WriteWithIndent("Enter your answer(s) (1 : 4): ");
                                     answer = Console.ReadLine().Trim();
                                     if (string.IsNullOrWhiteSpace(answer))
                                         continue;
@@ -202,7 +197,7 @@
                                     );
 
                                     if (valid) break;
-                                    Console.WriteLine($"{tabs}Invalid input. Please enter numbers between 1 and 4, separated by commas if multiple.");
+                                    WriteWithIndent("Invalid input. Please enter numbers between 1 and 4, separated by commas if multiple.");
                                 } while (true);
                             }
 
@@ -211,15 +206,15 @@
                         }
 
                         Thread.Sleep(1000);
-                        Console.WriteLine($"{tabs}Thank You.");
+                        WriteWithIndent("Thank You.\n");
                         Console.WriteLine(stars);
 
                         Thread.Sleep(1000);
 
                         Fexams[examIdx].ShowExam();
-
                         Thread.Sleep(1000);
-                        Console.Write($"{tabs}Press any key to go to the main menu...");
+
+                        WriteWithIndent("Press any key to go to the main menu...");
                         Console.ReadLine();
                     }
                 }
@@ -260,7 +255,7 @@
 
         static void Exit()
         {
-            Console.WriteLine($"\n{tabs}Exiting the program. Goodbye!");
+            WriteWithIndent("Exiting the program...Goodbye\n");
             Thread.Sleep(2000);
             Environment.Exit(0);
         }
@@ -273,10 +268,11 @@
                 Thread.Sleep(500);             // half‑second per dot
                 Console.Write(".");
             }
-            Console.WriteLine($"\n{tabs}\t\tDone!\n\n\n");
+            WriteWithIndent("Done!\n\n\n", 9);
             Thread.Sleep(1000);
         }
-
+        public static void WriteWithIndent(string text, int indentLevel = 7)
+            => Console.Write(new string('\t', indentLevel) + text);
     }
 }
 
