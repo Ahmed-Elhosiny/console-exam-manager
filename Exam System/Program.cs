@@ -1,6 +1,6 @@
 ﻿namespace Exam_System
 {
-    internal class Program
+    public class Program
     {
         protected const string tabs = "\t\t\t\t\t\t\t";
         protected const string stars = $"{tabs}*****************************************\n";
