@@ -76,13 +76,13 @@
 
         void AddTrueOrFalseQ(string body, string header, int marks)
         {
-            Console.Write($"{tabs}Enter True or False Answer: ");
+            WriteWithIndent("Enter True or False Answer: ");
             string answer;
             do
             {
                 answer = Console.ReadLine().Trim().ToUpper();
                 if (answer == null || answer == "" || answer != "TRUE" && answer != "FALSE" && answer != "T" && answer != "F")
-                    Console.Write($"{tabs}Please enter 'true or t' or 'false or f': ");
+                    WriteWithIndent("Please enter 'true or t' or 'false or f': ");
                 else break;
             } while (true);
 
@@ -94,14 +94,14 @@
             string[] options;
             do
             {
-                Console.Write($"{tabs}Enter Options (4 options separated by commas): ");
+                WriteWithIndent("Enter Options (4 options separated by commas): ");
                 options = Console.ReadLine().Split(',');
 
             } while (options.Length != 4);
             int correctOptionIndex;
             do
             {
-                Console.Write($"{tabs}Enter Correct Option Index (1 : 4): ");
+                WriteWithIndent("Enter Correct Option Index (1 : 4): ");
 
             } while (!int.TryParse(Console.ReadLine(), out correctOptionIndex) || correctOptionIndex < 1 || correctOptionIndex > 4);
 
@@ -114,7 +114,7 @@
             string[] allOptions;
             do
             {
-                Console.Write($"{tabs}Enter Options (4 options separated by commas): ");
+                WriteWithIndent("Enter Options (4 options separated by commas): ");
                 allOptions = Console.ReadLine().Split(',');
 
             } while (allOptions.Length != 4);
@@ -128,7 +128,7 @@
                 ok = true;
                 do
                 {
-                    Console.Write($"{tabs}Enter Correct Option Indices (comma-separated, e.g., 1,2): ");
+                    WriteWithIndent("Enter Correct Option Indices (comma-separated, e.g., 1,2): ");
                     correctIndicesInput = Console.ReadLine().Split(',');
                 } while (correctIndicesInput.Length == 0 || correctIndicesInput.Any(i => !int.TryParse(i, out int index) || index < 1 || index > 4));
                 correctOptionIndices = new int[correctIndicesInput.Length];
@@ -137,7 +137,7 @@
                 {
                     if (!int.TryParse(correctIndicesInput[i], out int index) || index < 1 || index > 4)
                     {
-                        Console.WriteLine($"{tabs}Invalid index '{correctIndicesInput[i]}'. Please enter indices between 1 and 4.");
+                        WriteWithIndent($"Invalid index '{correctIndicesInput[i]}'. Please enter indices between 1 and 4.\n");
                         ok = false;
                         break;
                     }
@@ -155,39 +155,27 @@
             Thread.Sleep(1000);
             for (int i = 0; i < questionsNumber; ++i)
             {
+                Console.WriteLine($"\n\n{tabs}Question {i + 1}:\n{stars}\n");
+
                 string header;
-                Console.WriteLine($"\n\n{tabs}Question {i + 1}:\n");
-                Console.Write($"{tabs}Enter Question Header: ");
                 do
                 {
-                    header = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(header))
-                        Console.Write($"{tabs}Question header cannot be empty. Please enter a valid question header: ");
-                    else break;
-                } while (true);
+                    WriteWithIndent("Enter Question Header: ");
+                } while (string.IsNullOrWhiteSpace(header = Console.ReadLine()));
 
                 string body;
-                Console.Write($"{tabs}Enter Question Body: ");
                 do
                 {
-                    body = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(body))
-                        Console.Write($"{tabs}Question body cannot be empty. Please enter a valid question body: ");
-                    else break;
-
-                } while (true);
+                    WriteWithIndent("Enter Question Body: ");
+                } while (string.IsNullOrWhiteSpace(body = Console.ReadLine()));
 
                 int marks;
-                Console.Write($"{tabs}Enter Question Marks (1 : 3): ");
                 do
                 {
-                
-                    if (!int.TryParse(Console.ReadLine(), out marks) || marks < 1 || marks > 3)
-                        Console.Write($"{tabs}Please enter a valid number of marks (1 : 3): ");
-                    else break;
-                } while (true);
-
+                    WriteWithIndent("Enter Question Marks (1 : 3): ");
+                } while (!int.TryParse(Console.ReadLine(), out marks) || marks < 1 || marks > 3);
                 Thread.Sleep(500);
+
                 Console.WriteLine($"\n{tabs}1) True or False Question\n{tabs}2) Choose One Question\n{tabs}3) Choose All Question\n");
                 Console.Write($"\n{tabs}Enter Question Type (1 : 3): ");
                 int questionType;
@@ -213,7 +201,7 @@
                 }
 
             }
-            Program.LoadingMessage($"Creating {examType} Exam");
+            LoadingMessage($"Creating {examType} Exam");
         }
 
         public abstract void ShowExam();
@@ -225,7 +213,7 @@
         public override void ShowExam()
         {
             if (questions == null) throw new ArgumentNullException(nameof(questions));
-            string answers = $"\n\n{tabs}Correct Answers for The Practice Exam.\n{stars}\n";
+            string answers = $"\n\n{tabs}Correct Answers for The Practice Exam:\n{stars}\n";
 
             for (int i = 0; i < questions.Count; ++i)
             {
@@ -274,8 +262,8 @@
 
         public override void ShowExam()
         {
-            Console.WriteLine($"{tabs}Your Answers: \n\n");
-
+            WriteWithIndent("Your Answers: \n\n\n");
+            Console.WriteLine(stars);
             for (int i = 0; i < QuestionsNumber; ++i)
             {
                 Console.WriteLine($"{tabs}{i + 1}) {Questions[i]}");
@@ -283,23 +271,19 @@
                 {
 
                     string[] ans = Answers[i].Split(',');
-                    Console.Write($"{tabs}Your Answer(s): ");
+                    WriteWithIndent("Your Answer(s): ");
                     Console.WriteLine(string.Join(" & ", ans.Select(s => int.TryParse(s, out int num) ? $"{num}) {caq.Options[num - 1]}" : "")));
 
                 }
                 else if (Questions[i] is ChooseOneQuestion coq)
                 {
-                    //int idx = coq.CorrectOptionIndex;
-                    ////string correctOption = coq.Options[idx];
-                    //string correctOption = $"{idx}) {coq.Options[idx - 1]}";
-                    //answers += correctOption;
-                    Console.WriteLine($"{tabs}Your Answer: {Answers[i]}) {coq.Options[int.Parse(Answers[i]) - 1]}\n");
+                    WriteWithIndent($"Your Answer: {Answers[i]}) {coq.Options[int.Parse(Answers[i]) - 1]}\n\n");
                 }
                 else
                 {
                     string ans = Answers[i];
                     string t = (ans == "1") ? "TRUE" : "FALSE";
-                    Console.WriteLine($"{tabs}Your Answer: {ans}) {t}\n");
+                    WriteWithIndent($"Your Answer: {ans}) {t}\n\n");
                 }
             }
         }

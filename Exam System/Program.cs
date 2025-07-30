@@ -77,16 +77,20 @@
                     if (Pexams.Count == 0)
                     {
                         WriteWithIndent("You Can't take practice exams right now...\n\n");
+                        Thread.Sleep(1500);
                         WriteWithIndent("Press any key to go to the main menu...");
                         Console.ReadLine();
                     }
                     else
                     {
+                        Thread.Sleep(1000);
                         int examIdx = new Random().Next(Pexams.Count);
+                        PracticeExam pq = (PracticeExam)Pexams[examIdx];
+                        Console.WriteLine("First Q: " + pq.Questions[0]);
+                        pq.Questions[0].Header = "New Header";
                         int n = Pexams[examIdx].QuestionsNumber;
                         Pexams[examIdx].Answers = new List<string>(Enumerable.Repeat("0", n));
 
-                        Thread.Sleep(1000);
                         Console.WriteLine($"\n\n\n\n{stars}{Pexams[examIdx]}\n{stars}");
                         for (int i = 0; i < n; ++i)
                         {
@@ -139,10 +143,6 @@
                         Console.WriteLine(stars);
 
                         Pexams[examIdx].ShowExam();
-
-                        Thread.Sleep(1000);
-                        WriteWithIndent("Press any key to go to the main menu...");
-                        Console.ReadLine();
                     }
                 }
                 else
@@ -150,20 +150,22 @@
                     if (Fexams.Count == 0)
                     {
                         WriteWithIndent("You Can't take final exams right now...\n\n");
+                        Thread.Sleep(1500);
                         WriteWithIndent("Press any key to go to the main menu...");
                         Console.ReadLine();
                     }
                     else
                     {
+                        Thread.Sleep(1000);
+                        
                         int examIdx = new Random().Next(Fexams.Count);
                         int n = Fexams[examIdx].QuestionsNumber;
                         Fexams[examIdx].Answers = new List<string>(Enumerable.Repeat("0", n));
 
-                        Thread.Sleep(1000);
                         Console.WriteLine($"\n\n\n\n{stars}{Fexams[examIdx]}\n{stars}");
                         for (int i = 0; i < n; ++i)
                         {
-                            WriteWithIndent($"{i + 1}) {Fexams[examIdx].Questions[i]}");
+                            WriteWithIndent($"{i + 1}) {Fexams[examIdx].Questions[i]}\n");
                             string answer;
                             if (Fexams[examIdx].Questions[i] is TrueOrFalseQuestion)
                             {
@@ -207,16 +209,17 @@
 
                         Thread.Sleep(1000);
                         WriteWithIndent("Thank You.\n");
+                        Thread.Sleep(1000);
                         Console.WriteLine(stars);
 
-                        Thread.Sleep(1000);
-
                         Fexams[examIdx].ShowExam();
-                        Thread.Sleep(1000);
 
-                        WriteWithIndent("Press any key to go to the main menu...");
-                        Console.ReadLine();
+
+
                     }
+                    Thread.Sleep(1000);
+                    WriteWithIndent("Press any key to go to the main menu...");
+                    Console.ReadLine();
                 }
 
                 Main();
@@ -268,11 +271,12 @@
                 Thread.Sleep(500);             // half‑second per dot
                 Console.Write(".");
             }
+            Console.WriteLine();
             WriteWithIndent("Done!\n\n\n", 9);
             Thread.Sleep(1000);
         }
         public static void WriteWithIndent(string text, int indentLevel = 7)
-            => Console.Write(new string('\t', indentLevel) + text);
+            => Console.Write("\n" + new string('\t', indentLevel) + text);
     }
 }
 
