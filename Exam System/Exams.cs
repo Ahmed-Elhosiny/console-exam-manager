@@ -205,9 +205,97 @@
         }
 
         public abstract void ShowExam();
+        public void TakeExam(int examType)
+        {
+            int examIdx;
+            if (examType == 1)
+            {
+                if (Pexams.Count == 0)
+                {
+                    WriteWithIndent("No Practice Exams available. Come Back Later.\n");
+                    Thread.Sleep(1500);
+                    WriteWithIndent("Press any key to go to the main menu...");
+                    Console.ReadLine();
+                    return;
+                }
+                examIdx = new Random().Next(Pexams.Count);
+            }
+            else
+            {
+                if (Fexams.Count == 0)
+                {
+                    WriteWithIndent("No Final Exams available. Come Back Later.\n");
+                    Thread.Sleep(1500);
+                    WriteWithIndent("Press any key to go to the main menu...");
+                    Console.ReadLine();
+                    return;
+                }
+                examIdx = new Random().Next(Fexams.Count);
+            }
+            Exam exam = examType == 1 ? Pexams[examIdx] : Fexams[examIdx];
+            int n = exam.QuestionsNumber;
+            exam.Answers = new List<string>(Enumerable.Repeat("0", n));
+
+            Console.WriteLine($"\n\n\n\n{stars}{exam}\n{stars}");
+            for (int i = 0; i < n; ++i)
+            {
+                WriteWithIndent($"{i + 1}) {exam.Questions[i]}\n");
+                string answer;
+
+                if (exam.Questions[i] is TrueOrFalseQuestion)
+                {
+                    do
+                    {
+                        WriteWithIndent("Enter Your answer (1 for true and 2 for false): ");
+                        answer = Console.ReadLine().Trim();
+
+                    } while (!int.TryParse(answer, out int num) || num < 1 || num > 2);
+                }
+                else if (exam.Questions[i] is ChooseOneQuestion)
+                {
+                    do
+                    {
+                        WriteWithIndent("Enter your answer (1 : 4): ");
+                        answer = Console.ReadLine().Trim();
+                    } while (!int.TryParse(answer, out int num) || num < 1 || num > 4);
+                }
+                else
+                {
+                    do
+                    {
+                        WriteWithIndent("Enter your answer(s) (1 : 4): ");
+                        answer = Console.ReadLine().Trim();
+                        if (string.IsNullOrWhiteSpace(answer))
+                            continue;
+
+                        string[] answers = answer.Split(',');
+                        bool valid = answers.All(ans =>
+                            int.TryParse(ans.Trim(), out int num) && num >= 1 && num <= 4
+                        );
+
+                        if (valid) break;
+                        WriteWithIndent("Invalid input. Please enter numbers between 1 and 4, separated by commas if multiple.");
+                    } while (true);
+                }
+
+                exam.Answers[i] = answer;
+                Console.WriteLine(stars);
+            }
+            Thread.Sleep(1000);
+            WriteWithIndent("Thank You.\n");
+            Thread.Sleep(1000);
+            Console.WriteLine(stars);
+            exam.ShowExam();
+            Thread.Sleep(1000);
+            WriteWithIndent("Press any key to go to the main menu...");
+            Console.ReadLine();
+            Main();
+        }
+
     }
     public class PracticeExam : Exam
     {
+        public PracticeExam() : this(30, new Subject(), 10) { }
         public PracticeExam(int time, Subject subject, int questionNumber) : base(time, subject, questionNumber) { }
 
         public override void ShowExam()
@@ -258,6 +346,7 @@
     }
     public class FinalExam : Exam
     {
+        public FinalExam() : this(45, new Subject(), 100) { }
         public FinalExam(int time, Subject subject, int questionNumber) : base(time, subject, questionNumber) { }
 
         public override void ShowExam()
