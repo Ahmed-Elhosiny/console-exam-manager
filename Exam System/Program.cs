@@ -10,6 +10,10 @@
         {
             MainMenu();
 
+            Exam e1;
+            e1=new PracticeExam();
+
+
             int examType;
             do
             {
@@ -121,6 +125,8 @@
         }
         public static void WriteWithIndent(string text, int indentLevel = 7)
             => Console.Write("\n" + new string('\t', indentLevel) + text);
+        
+
     }
 }
 

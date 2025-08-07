@@ -4,13 +4,15 @@
     {
         protected const string tabs = "\t\t\t\t\t\t\t";
         protected const string stars = $"{tabs}*****************************************\n";
+
         int time;
         int questionsNumber;
         Subject subject;
         protected List<Question> questions;
         List<string> answers;
+       
 
-        public Exam() : this(180, new Subject(), 60) { }
+        public Exam() : this(180, new Subject(), 60) {}
         public Exam(int time, Subject subject, int questionsNumber)
         {
             Time = time;
