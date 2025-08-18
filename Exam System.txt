@@ -1,0 +1,766 @@
+Program.cs:
+namespace Exam_System
+{
+    public class Program
+    {
+        protected const string tabs = "\t\t\t\t\t\t\t";
+        protected const string stars = $"{tabs}*****************************************\n";
+        public static List<Exam> exams = [];
+        public static void Main()
+        {
+            MainMenu();
+            int role;
+            do
+            {
+                WriteWithIndent("Choose your role (or Press 3 to exit): ");
+            } while (!int.TryParse(Console.ReadLine(), out role) || role < 1 || role > 3);
+
+            Console.Clear();
+
+
+            if (role == 1)
+            {
+                InstructorMenu();
+                int choice;
+                do
+                {
+                    WriteWithIndent("Choose an option (or Press 3 to exit): ");
+                } while (!int.TryParse(Console.ReadLine(), out choice) || choice < 1 || choice > 3);
+                if (choice == 1)
+                {
+                    Console.Clear();
+                    Thread.Sleep(300);
+                    Console.WriteLine($"\n\n{stars}{tabs}\tCreating a new exam form  \n{stars}");
+                    Thread.Sleep(300);
+
+                    string subjectName;
+                    do
+                    {
+                        Console.Write($"\n{tabs}Enter Subject Name: ");
+                        subjectName = Console.ReadLine();
+                    } while (string.IsNullOrWhiteSpace(subjectName));
+
+                    string subjectInstructor;
+                    do
+                    {
+                        Console.Write($"{tabs}Enter Subject Instructor: ");
+                        subjectInstructor = Console.ReadLine();
+                    } while (string.IsNullOrWhiteSpace(subjectInstructor));
+
+                    string subjectCode;
+                    do
+                    {
+                        Console.Write($"{tabs}Enter Subject Code: ");
+                        subjectCode = Console.ReadLine();
+                    } while (string.IsNullOrWhiteSpace(subjectCode));
+
+                    Subject subject = new(subjectName, subjectInstructor, subjectCode);
+
+                    int time;
+                    do
+                    {
+                        WriteWithIndent("Enter Exam Time in minutes (15 : 45): ");
+                    } while (!int.TryParse(Console.ReadLine(), out time) || time < 15 || time > 45);
+
+
+                    int questionsNumber;
+                    do
+                    {
+                        WriteWithIndent("Enter Number of Questions (1 : 100): ");
+                    } while (!int.TryParse(Console.ReadLine(), out questionsNumber) || questionsNumber < 1 || questionsNumber > 100);
+
+                    Exam exam = new(time, subject, questionsNumber);
+
+                    Thread.Sleep(1000);
+
+                    // Add questions
+                    for (int i = 0; i < questionsNumber; ++i)
+                    {
+                        Console.WriteLine($"\n\n{tabs}Question {i + 1}:\n{stars}\n");
+
+                        string header;
+                        do
+                        {
+                            WriteWithIndent("Enter Question Header: ");
+                        } while (string.IsNullOrWhiteSpace(header = Console.ReadLine()));
+
+                        string body;
+                        do
+                        {
+                            WriteWithIndent("Enter Question Body: ");
+                        } while (string.IsNullOrWhiteSpace(body = Console.ReadLine()));
+
+                        int marks;
+                        do
+                        {
+                            WriteWithIndent("Enter Question Marks (1 : 3): ");
+                        } while (!int.TryParse(Console.ReadLine(), out marks) || marks < 1 || marks > 3);
+                        Thread.Sleep(500);
+
+                        Console.WriteLine($"\n{tabs}1) True or False Question\n{tabs}2) Choose One Question\n{tabs}3) Choose All Question\n");
+                        Console.Write($"\n{tabs}Enter Question Type (1 : 3): ");
+                        int questionType;
+                        do
+                        {
+                            if (!int.TryParse(Console.ReadLine(), out questionType) || questionType < 1 || questionType > 3)
+                                Console.Write($"{tabs}Please choose number from 1 to 3: ");
+                            else break;
+                        } while (true);
+
+                        switch (questionType)
+                        {
+                            case 1:
+                                exam.AddTrueOrFalseQ(body, header, marks);
+                                break;
+                            case 2:
+                                exam.AddCOQ(body, header, marks);
+                                break;
+
+                            case 3:
+                                exam.AddCAQ(body, header, marks);
+                                break;
+                        }
+
+
+                    }
+                    exams.Add(exam);
+                    Main();
+                    return;
+
+
+                }
+                else if (choice == 2)
+                {
+                    Main();
+                    return;
+                }
+                else Exit();
+
+            }
+            else if (role == 2)
+            {
+                StudentMenu();
+                int choice;
+                do
+                {
+                    WriteWithIndent("Choose an option (or Press 4 to exit): ");
+                } while (!int.TryParse(Console.ReadLine(), out choice) || choice < 1 || choice > 4);
+
+                if (choice == 3)
+                {
+                    Main();
+                    return;
+                }
+                else if (choice == 4) Exit();
+
+
+
+                TakeExam(exams[0], choice);
+            }
+            else Exit();
+
+
+
+
+
+
+
+        }
+
+        static void MainMenu()
+        {
+            Console.Clear();
+            Console.WriteLine($"\n{stars}{tabs}\tWelcome to the Exam System\t\t\n{stars}");
+            WriteWithIndent($"1) Instructor\n{tabs}2) Student\n{tabs}3) Exit\n");
+            Thread.Sleep(200);
+        }
+        static void InstructorMenu()
+        {
+            Thread.Sleep(200);
+            Console.WriteLine($"\n{stars}{tabs}\tInstructor Menu\t\t\n{stars}");
+            Console.WriteLine($"{tabs}1) Create Exam\n{tabs}2) Back to Main Menu\n{tabs}3) Exit\n");
+        }
+        static void StudentMenu()
+        {
+            Console.Clear();
+            Thread.Sleep(200);
+            Console.WriteLine($"\n{stars}{tabs}\tStudent Menu\t\t\n{stars}");
+            Console.WriteLine($"{tabs}1) Take Practice Exam\n{tabs}2) Take Final Exam\n{tabs}3) Back to Main Menu\n{tabs}4) Exit\n");
+        }
+        static void Exit()
+        {
+            WriteWithIndent("Exiting the program...Goodbye\n");
+            Thread.Sleep(2000);
+            Environment.Exit(0);
+        }
+        public static void LoadingMessage(string message)
+        {
+
+            Console.Write($"{stars}\n{tabs}\t{message}");
+            for (int dot = 0; dot < 3; dot++)
+            {
+                Thread.Sleep(500);             // half‑second per dot
+                Console.Write(".");
+            }
+            Console.WriteLine();
+            WriteWithIndent("Done!\n\n\n", 9);
+            Thread.Sleep(1000);
+        }
+        public static void WriteWithIndent(string text, int indentLevel = 7)
+            => Console.Write("\n" + new string('\t', indentLevel) + text);
+        public static void TakeExam(Exam exam, int type)
+        {
+            Console.Clear();
+            Console.WriteLine($"\n\n\n\n{stars}{exam}\n{stars}");
+            int n = exam.QuestionsNumber;
+            exam.Answers = [.. Enumerable.Repeat("0", n)];
+
+            for (int i = 0; i < n; ++i)
+            {
+                Console.WriteLine($"{tabs}{i + 1}) {exam.Questions[i]}");
+                string answer;
+
+                if (exam.Questions[i] is TrueOrFalseQuestion)
+                {
+                    do
+                    {
+                        Console.Write($"\n{tabs}Enter your answer (1 for true and 2 for false): ");
+                        answer = Console.ReadLine().Trim();
+
+                    } while (!int.TryParse(answer, out int num) || num < 1 || num > 2);
+                }
+                else if (exam.Questions[i] is ChooseOneQuestion)
+                {
+                    do
+                    {
+                        Console.Write($"\n{tabs}Enter your answer (1 : 4): ");
+                        answer = Console.ReadLine().Trim();
+                    } while (!int.TryParse(answer, out int num) || num < 1 || num > 4);
+                }
+                else
+                {
+                    do
+                    {
+                        Console.Write($"\n{tabs}Enter your answer(s) (1 : 4): ");
+                        answer = Console.ReadLine().Trim();
+                        if (string.IsNullOrWhiteSpace(answer))
+                            continue;
+
+                        string[] answers = answer.Split(',');
+                        bool valid = answers.All(ans =>
+                            int.TryParse(ans.Trim(), out int num) && num >= 1 && num <= 4
+                        );
+
+                        if (valid) break;
+                        Console.WriteLine($"{tabs}Invalid input. Please enter numbers between 1 and 4, separated by commas if multiple.");
+                    } while (true);
+                }
+
+                exam.Answers[i] = answer;
+                Console.WriteLine(stars);
+            }
+            if(type == 1)
+            {
+                PracticeExam p = new(exam.QuestionsNumber, exam.Questions);
+                p.ShowExam();
+            }
+            else
+            {
+                FinalExam f = new(exam.QuestionsNumber, exam.Questions, exam.Answers);
+                f.ShowExam();
+            }
+
+
+
+
+                Main();
+        }
+
+    }
+}
+
+##############################
+Exam.cs
+namespace Exam_System
+{
+    public class Exam
+    {
+        protected const string tabs = "\t\t\t\t\t\t\t";
+        protected const string stars = $"{tabs}*****************************************\n";
+
+        int time;
+        int questionsNumber;
+        Subject subject;
+        protected List<Question> questions;
+        List<string> answers;
+
+
+        public Exam() : this(25, new Subject(), 3) { }
+        public Exam(int time, Subject subject, int questionsNumber)
+        {
+            Time = time;
+            Subject = subject;
+            Questions = [];
+            Answers = [];
+            QuestionsNumber = questionsNumber;
+            TotalMarks = 0;
+        }
+        public int TotalMarks { get; private set; }
+        public int Time
+        {
+            get => time;
+            set
+            {
+                if (value < 15 || value > 45) throw new ArgumentOutOfRangeException("Invalid Exam Time. (exam range: 15:45 minutes)");
+                time = value;
+            }
+        }
+        public Subject Subject
+        {
+            get => subject;
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(subject));
+                subject = value;
+            }
+        }
+        public int QuestionsNumber
+        {
+            get => questionsNumber;
+            set
+            {
+                if (value < 1 || value > 100) throw new ArgumentOutOfRangeException("Invalid Questions Number. (exam range: 1:100 questions)");
+                questionsNumber = value;
+            }
+        }
+        public List<Question> Questions
+        {
+            get => questions;
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(questions));
+                questions = value;
+                questionsNumber = questions.Count;
+            }
+        }
+        public List<string> Answers
+        {
+            get => answers;
+            set
+            {
+                answers = value;
+            }
+
+        }
+
+
+        void AddQuestion(Question question)
+        {
+            Questions.Add(question);
+            TotalMarks += question.Marks;
+        }
+        public void AddTrueOrFalseQ(string body, string header, int marks)
+        {
+            WriteWithIndent("Enter True or False Answer: ");
+            string answer;
+            do
+            {
+                answer = Console.ReadLine().Trim().ToUpper();
+                if (answer == null || answer == "" || answer != "TRUE" && answer != "FALSE" && answer != "T" && answer != "F")
+                    WriteWithIndent("Please enter 'true or t' or 'false or f': ");
+                else break;
+            } while (true);
+
+            AddQuestion(new TrueOrFalseQuestion(body, header, marks, answer));
+
+        }
+        public void AddCOQ(string body, string header, int marks)
+        {
+            string[] options;
+            do
+            {
+                WriteWithIndent("Enter Options (4 options separated by commas): ");
+                options = Console.ReadLine().Split(',');
+
+            } while (options.Length != 4);
+            int correctOptionIndex;
+            do
+            {
+                WriteWithIndent("Enter Correct Option Index (1 : 4): ");
+
+            } while (!int.TryParse(Console.ReadLine(), out correctOptionIndex) || correctOptionIndex < 1 || correctOptionIndex > 4);
+
+            AddQuestion(new ChooseOneQuestion(body, header, marks, options, correctOptionIndex));
+
+
+        }
+        public void AddCAQ(string body, string header, int marks)
+        {
+            string[] allOptions;
+            do
+            {
+                WriteWithIndent("Enter Options (4 options separated by commas): ");
+                allOptions = Console.ReadLine().Split(',');
+
+            } while (allOptions.Length != 4);
+
+
+            string[] correctIndicesInput;
+            int[] correctOptionIndices;
+            bool ok;
+            do
+            {
+                ok = true;
+                do
+                {
+                    WriteWithIndent("Enter Correct Option Indices (comma-separated, e.g., 1,2): ");
+                    correctIndicesInput = Console.ReadLine().Split(',');
+                } while (correctIndicesInput.Length == 0 || correctIndicesInput.Any(i => !int.TryParse(i, out int index) || index < 1 || index > 4));
+                correctOptionIndices = new int[correctIndicesInput.Length];
+
+                for (int i = 0; i < correctIndicesInput.Length; i++)
+                {
+                    if (!int.TryParse(correctIndicesInput[i], out int index) || index < 1 || index > 4)
+                    {
+                        WriteWithIndent($"Invalid index '{correctIndicesInput[i]}'. Please enter indices between 1 and 4.\n");
+                        ok = false;
+                        break;
+                    }
+                    correctOptionIndices[i] = index;
+                }
+            } while (!ok);
+
+
+
+
+            AddQuestion(new ChooseAllQuestion(body, header, marks, allOptions, correctOptionIndices));
+        }
+
+        public virtual extern void ShowExam();
+        public override string ToString()
+        {
+            if (questions == null) throw new ArgumentNullException(nameof(questions));
+            string exam = $"{tabs}Exam\n{tabs}Time: {Time} minutes\n{Subject}\n{stars}\n";
+            exam += $"{tabs}Full Exam\n{stars}\n";
+            for (int i = 0; i < questions.Count; ++i)
+            {
+                exam += $"{tabs}{i + 1}) {questions[i]}\n\n\n";
+            }
+            return exam;
+        }
+        public static void WriteWithIndent(string text, int indentLevel = 7)
+           => Console.Write("\n" + new string('\t', indentLevel) + text);
+
+    }
+    public class PracticeExam : Exam
+    {
+        public PracticeExam() : this(30, new Subject(), 3) { }
+        public PracticeExam(int time, Subject subject, int questionNumber) : base(time, subject, questionNumber) { }
+        public PracticeExam(int _questionsNumber, List<Question> _questions)
+        {
+            QuestionsNumber = _questionsNumber;
+            Questions = _questions;
+
+        }
+        public override void ShowExam()
+        {
+            Thread.Sleep(700);
+            Console.Clear();
+
+            if (questions == null) throw new ArgumentNullException(nameof(questions));
+            string answers = $"\n\n{tabs}Correct Answers for The Practice Exam:\n{stars}\n";
+
+            for (int i = 0; i < questions.Count; ++i)
+            {
+                answers += $"{tabs}{i + 1}. Correct Answer(s): ";
+                Question q = questions[i];
+                if (q is ChooseOneQuestion coq)
+                {
+                    int idx = coq.CorrectOptionIndex;
+                    //string correctOption = coq.Options[idx];
+                    string correctOption = $"{idx}) {coq.Options[idx - 1]}";
+                    answers += correctOption;
+                }
+                else if (q is ChooseAllQuestion caq)
+                {
+                    string correctOptions = string.Join(" & ", caq.CorrectOptionIndices.Select(idx => $"{idx}) {caq.Options[idx - 1]}"));
+                    answers += correctOptions;
+                }
+                else if (q is TrueOrFalseQuestion tfq)
+                {
+                    if (tfq.Answer == "TRUE" /*|| tfq.Answer == "T"*/)
+                        answers += $"1) True";
+                    else
+                        answers += "2) False";
+                }
+                answers += "\n";
+            }
+
+            Console.WriteLine(answers);
+            Console.ReadLine();
+        }
+
+        public override string ToString()
+        {
+            if (questions == null) throw new ArgumentNullException(nameof(questions));
+            string exam = $"{tabs}Practice Exam\n{tabs}Time: {Time} minutes\n{Subject}\n{stars}\n";
+            exam += $"{tabs}Full Practice Exam\n{stars}\n";
+            for (int i = 0; i < questions.Count; ++i)
+            {
+                exam += $"{tabs}{i + 1}) {questions[i]}\n\n\n";
+            }
+            return exam;
+        }
+    }
+    public class FinalExam : Exam
+    {
+        public FinalExam() : this(45, new Subject(), 100) { }
+        public FinalExam(int time, Subject subject, int questionNumber) : base(time, subject, questionNumber) { }
+        public FinalExam(int _questionsNumber, List<Question> _questions, List<string> _answers)
+        {
+            QuestionsNumber = _questionsNumber;
+            Questions = _questions;
+            Answers = _answers;
+
+        }
+        public override void ShowExam()
+        {
+            Thread.Sleep(700);
+            Console.Clear();
+
+            WriteWithIndent("Your Answers: \n\n\n");
+            Console.WriteLine(stars);
+            for (int i = 0; i < QuestionsNumber; ++i)
+            {
+                Console.WriteLine($"{tabs}{i + 1}) {Questions[i]}");
+                if (Questions[i] is ChooseAllQuestion caq)
+                {
+
+                    string[] ans = Answers[i].Split(',');
+                    WriteWithIndent("Your Answer(s): ");
+                    Console.WriteLine(string.Join(" & ", ans.Select(s => int.TryParse(s, out int num) ? $"{num}) {caq.Options[num - 1]}" : "")));
+
+                }
+                else if (Questions[i] is ChooseOneQuestion coq)
+                {
+                    WriteWithIndent($"Your Answer: {Answers[i]}) {coq.Options[int.Parse(Answers[i]) - 1]}\n\n");
+                }
+                else
+                {
+                    string ans = Answers[i];
+                    string t = (ans == "1") ? "TRUE" : "FALSE";
+                    WriteWithIndent($"Your Answer: {ans}) {t}\n\n");
+                }
+            }
+            Console.ReadLine();
+        }
+        public override string ToString()
+        {
+            if (questions == null) throw new ArgumentNullException(nameof(questions));
+            string exam = $"{tabs}Final Exam\n{tabs}Time: {Time} minutes\n{Subject}{stars}\n";
+            exam += $"{tabs}Full Final Exam\n{stars}\n";
+            for (int i = 0; i < questions.Count; ++i)
+            {
+                exam += $"{tabs}{i + 1}) {questions[i]}\n\n\n";
+            }
+            return exam;
+        }
+    }
+}
+
+#############################
+Subject.cs
+namespace Exam_System
+{
+    public class Subject
+    {
+        protected const string tabs = "\t\t\t\t\t\t\t";
+
+        protected const string stars = $"{tabs}*****************************************\n";
+        string name, instructor;
+        public string Name
+        {
+            get => name;
+            set => name = string.IsNullOrWhiteSpace(value) ? throw new ArgumentException("Name cannot be null or empty.") : value;
+        }
+        public string Instructor
+        {
+            get => instructor;
+            set => instructor = string.IsNullOrWhiteSpace(value) ? throw new ArgumentException("Instructor cannot be null or empty.") : value;
+
+        }
+        public string Code { get; init; } // Make Code Immutable after initialization
+
+        public Subject() : this("Unknown", "Unknown", "CS150") { }
+        public Subject(string _name, string _instructor, string _code)
+        {
+            Name = _name;
+            Instructor = _instructor;
+            Code = string.IsNullOrWhiteSpace(_code) ? throw new ArgumentException("Code cannot be null or empty.") : _code;
+
+        }
+        public override string ToString() => $"{tabs}Subject Name: {Name}\n{tabs}Code: {Code}\n{tabs}Instructor: Eng.{Instructor}\n";
+
+        public static Subject GetSubject()
+        {
+
+            string subjectName;
+            do
+            {
+                Console.Write($"\n{tabs}Enter Subject Name: ");
+                subjectName = Console.ReadLine();
+            } while (string.IsNullOrWhiteSpace(subjectName));
+
+            string subjectInstructor;
+            do
+            {
+                Console.Write($"{tabs}Enter Subject Instructor: ");
+                subjectInstructor = Console.ReadLine();
+            } while (string.IsNullOrWhiteSpace(subjectInstructor));
+
+            string subjectCode;
+            do
+            {
+                Console.Write($"{tabs}Enter Subject Code: ");
+                subjectCode = Console.ReadLine();
+            } while (string.IsNullOrWhiteSpace(subjectCode));
+
+            return new(subjectName, subjectInstructor, subjectCode);
+        }
+    }
+}
+
+
+##############################
+Question.cs
+namespace Exam_System
+{
+    public abstract class Question
+    {
+        protected const string tabs = "\t\t\t\t\t\t\t";
+        protected const string stars = $"{tabs}*****************************************\n";
+        string body;
+        string header;
+        int marks;
+
+        public string Body
+        {
+            get => body;
+            set => body = string.IsNullOrWhiteSpace(value) ? throw new ArgumentException("Question body cannot be null or empty.") : value;
+        }
+        public string Header
+        {
+            get => header;
+            set => header = string.IsNullOrWhiteSpace(value) ? throw new ArgumentException("Question header cannot be null or empty.") : value;
+        }
+        public int Marks
+        {
+            get => marks;
+            set => marks = (value < 1 || value > 3) ? throw new ArgumentException("Question marks range (1 : 3).") : value;
+        }
+
+        public Question(string body, string header, int marks)
+        {
+            Body = body;
+            Header = header;
+            Marks = marks;
+        }
+        public Question() : this("Q Body", "Q Header", 1) { }
+
+
+    }
+
+    internal class ChooseOneQuestion : Question
+    {
+        public string[] options;
+        int correctOptionIndex;
+        public string[] Options
+        {
+            set => options = (value == null || value.Length != 4) ? throw new ArgumentException("Options must be exactly 4.") : value;
+            get => options;
+        }
+        public int CorrectOptionIndex
+        {
+            get => correctOptionIndex;
+            set => correctOptionIndex = (value < 1 || value > 4) ? throw new ArgumentException("Correct option index (1 : 4).") : value;
+        }
+        public ChooseOneQuestion(string body, string header, int marks, string[] options, int correctOptionIndex)
+        : base(body, header, marks)
+        {
+            Options = options;
+            CorrectOptionIndex = correctOptionIndex;
+        }
+        public override string ToString()
+        {
+            string opts = string.Join("\n", Options.Select((o, i) => $"{tabs}{i + 1}. {o}"));
+            return $"{Header}: {Body}\n{tabs}Options:\n{opts}";
+        }
+
+
+
+    }
+    internal class ChooseAllQuestion : Question
+    {
+        string[] options;
+        int[] correctOptionIndices;
+
+        public ChooseAllQuestion(string body, string header, int marks, string[] options, int[] correctOptionIndices) : base(body, header, marks)
+        {
+            Options = options;
+            CorrectOptionIndices = correctOptionIndices;
+        }
+        public string[] Options
+        {
+            get => options;
+            set => options = (value == null || value.Length != 4) ? throw new ArgumentException("Options must be exactly 4.") : value;
+        }
+        public int[] CorrectOptionIndices
+        {
+            get => correctOptionIndices;
+            set
+            {
+                if (value == null || value.Length == 0) throw new ArgumentException("At least one correct option is required.");
+                foreach (int v in value)
+                {
+                    if (v < 1 || v > 4) throw new ArgumentException("Each correct option index must be between 1 and 4.");
+                }
+
+                correctOptionIndices = value;
+            }
+        }
+
+        public override string ToString()
+        {
+            string opts = string.Join("\n", Options.Select((o, i) => $"{tabs}{i + 1}. {o}"));
+            return $"{Header}: {Body}\n{tabs}Options:\n{opts}\n";
+        }
+
+
+
+
+    }
+    internal class TrueOrFalseQuestion : Question
+    {
+        string answer;
+        public string Answer
+        {
+            get => answer;
+            set
+            {
+                value = value.Trim().ToUpper();
+                if (string.IsNullOrEmpty(value) || (value != "TRUE" && value != "FALSE" && value != "T" && value != "F")) throw new ArgumentException("Invalid True of False Answer");
+                if (value == "T") value = "TRUE";
+                if (value == "F") value = "FALSE";
+                answer = value;
+            }
+        }
+        public TrueOrFalseQuestion(string body, string header, int marks, string answer) : base(body, header, marks)
+        {
+            Answer = answer;
+        }
+
+        public override string ToString() => $"{Header}: {Body}\n{tabs}Options:\n{tabs}1. TRUE\n{tabs}2. FALSE";
+
+
+    }
+}
