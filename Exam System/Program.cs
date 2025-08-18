@@ -153,7 +153,13 @@
                 else if (choice == 4) Exit();
 
 
-
+                if(exams.Count == 0)
+                {
+                    WriteWithIndent("No exams available. Please ask your instructor to create an exam.\n");
+                    Thread.Sleep(2000);
+                    Main();
+                    return;
+                }
                 TakeExam(exams[0], choice);
             }
             else Exit();
