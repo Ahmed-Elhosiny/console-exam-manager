@@ -78,13 +78,13 @@
         }
         public void AddTrueOrFalseQ(string body, string header, int marks)
         {
-            WriteWithIndent("Enter True or False Answer: ");
+            Helpers.WriteWithIndent("Enter True or False Answer: ");
             string answer;
             do
             {
                 answer = Console.ReadLine().Trim().ToUpper();
                 if (answer == null || answer == "" || answer != "TRUE" && answer != "FALSE" && answer != "T" && answer != "F")
-                    WriteWithIndent("Please enter 'true or t' or 'false or f': ");
+                    Helpers.WriteWithIndent("Please enter 'true or t' or 'false or f': ");
                 else break;
             } while (true);
 
@@ -96,14 +96,14 @@
             string[] options;
             do
             {
-                WriteWithIndent("Enter Options (4 options separated by commas): ");
+                Helpers.WriteWithIndent("Enter Options (4 options separated by commas): ");
                 options = Console.ReadLine().Split(',');
 
             } while (options.Length != 4);
             int correctOptionIndex;
             do
             {
-                WriteWithIndent("Enter Correct Option Index (1 : 4): ");
+                Helpers.WriteWithIndent("Enter Correct Option Index (1 : 4): ");
 
             } while (!int.TryParse(Console.ReadLine(), out correctOptionIndex) || correctOptionIndex < 1 || correctOptionIndex > 4);
 
@@ -116,7 +116,7 @@
             string[] allOptions;
             do
             {
-                WriteWithIndent("Enter Options (4 options separated by commas): ");
+               Helpers.WriteWithIndent("Enter Options (4 options separated by commas): ");
                 allOptions = Console.ReadLine().Split(',');
 
             } while (allOptions.Length != 4);
@@ -130,7 +130,7 @@
                 ok = true;
                 do
                 {
-                    WriteWithIndent("Enter Correct Option Indices (comma-separated, e.g., 1,2): ");
+                    Helpers.WriteWithIndent("Enter Correct Option Indices (comma-separated, e.g., 1,2): ");
                     correctIndicesInput = Console.ReadLine().Split(',');
                 } while (correctIndicesInput.Length == 0 || correctIndicesInput.Any(i => !int.TryParse(i, out int index) || index < 1 || index > 4));
                 correctOptionIndices = new int[correctIndicesInput.Length];
@@ -139,7 +139,7 @@
                 {
                     if (!int.TryParse(correctIndicesInput[i], out int index) || index < 1 || index > 4)
                     {
-                        WriteWithIndent($"Invalid index '{correctIndicesInput[i]}'. Please enter indices between 1 and 4.\n");
+                        Helpers.WriteWithIndent($"Invalid index '{correctIndicesInput[i]}'. Please enter indices between 1 and 4.\n");
                         ok = false;
                         break;
                     }
@@ -167,8 +167,7 @@
             }
             return exam;
         }
-        public static void WriteWithIndent(string text, int indentLevel = 7)
-           => Console.Write("\n" + new string('\t', indentLevel) + text);
+      
 
     }
     public class PracticeExam : Exam
@@ -247,7 +246,7 @@
             Thread.Sleep(700);
             Console.Clear();
 
-            WriteWithIndent("Your Answers: \n\n\n");
+            Helpers.WriteWithIndent("Your Answers: \n\n\n");
             Console.WriteLine(stars);
             for (int i = 0; i < QuestionsNumber; ++i)
             {
@@ -256,19 +255,19 @@
                 {
 
                     string[] ans = Answers[i].Split(',');
-                    WriteWithIndent("Your Answer(s): ");
+                    Helpers.WriteWithIndent("Your Answer(s): ");
                     Console.WriteLine(string.Join(" & ", ans.Select(s => int.TryParse(s, out int num) ? $"{num}) {caq.Options[num - 1]}" : "")));
 
                 }
                 else if (Questions[i] is ChooseOneQuestion coq)
                 {
-                    WriteWithIndent($"Your Answer: {Answers[i]}) {coq.Options[int.Parse(Answers[i]) - 1]}\n\n");
+                     Helpers.WriteWithIndent($"Your Answer: {Answers[i]}) {coq.Options[int.Parse(Answers[i]) - 1]}\n\n");
                 }
                 else
                 {
                     string ans = Answers[i];
                     string t = (ans == "1") ? "TRUE" : "FALSE";
-                    WriteWithIndent($"Your Answer: {ans}) {t}\n\n");
+                    Helpers.WriteWithIndent($"Your Answer: {ans}) {t}\n\n");
                 }
             }
             Console.ReadLine();
