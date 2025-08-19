@@ -153,7 +153,9 @@
             AddQuestion(new ChooseAllQuestion(body, header, marks, allOptions, correctOptionIndices));
         }
 
-        public virtual extern void ShowExam();
+        public virtual void ShowExam() {
+            Console.WriteLine(ToString());
+        }
         public override string ToString()
         {
             if (questions == null) throw new ArgumentNullException(nameof(questions));
