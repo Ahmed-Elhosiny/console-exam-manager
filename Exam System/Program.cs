@@ -289,7 +289,7 @@
             exams.Add(exam);
             Helpers.WriteWithIndent("Exam created successfully!\n");
             Thread.Sleep(1500);
-            Console.Read();
+            Console.ReadLine();
         }
 
       
