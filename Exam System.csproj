@@ -8,4 +8,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties exams_1json__JsonSchema="https://atmos.tools/schemas/atmos/atmos-manifest/1.0/atmos-manifest.json" /></VisualStudio></ProjectExtensions>
+
 </Project>

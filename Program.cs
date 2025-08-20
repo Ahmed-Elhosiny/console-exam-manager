@@ -4,9 +4,14 @@
     {
         protected const string tabs = "\t\t\t\t\t\t\t";
         protected const string stars = $"{tabs}*****************************************\n";
-        public static List<Exam> exams = [];
+        //public static List<Exam> exams = FileManager.exams;
         public static void Main()
         {
+            Console.WriteLine($"Exams file location: {Path.GetFullPath("exams.json")}");
+            Console.ReadKey();
+
+            FileManager.LoadExams();
+
             bool exitProgram = false;
             while (!exitProgram)
             {
@@ -209,7 +214,7 @@
             {
                 case 1: // Take Practice Exam
                 case 2: // Take Final Exam
-                    if (exams.Count == 0)
+                    if (FileManager.exams.Count == 0)
                     {
                         Helpers.WriteWithIndent("No exams available! Please ask instructor to create an exam first.\n");
                         Console.ReadLine();
@@ -242,36 +247,36 @@
 
         static Exam SelectExam()
         {
-            if (exams.Count == 0)
+            if (FileManager.exams.Count == 0)
             {
                 Helpers.WriteWithIndent("No exams available!\n");
                 return null;
             }
 
-            if (exams.Count == 1)
+            if (FileManager.exams.Count == 1)
             {
-                Helpers.WriteWithIndent($"Taking the only available exam: {exams[0].Subject.Name}\n");
+                Helpers.WriteWithIndent($"Taking the only available exam: {FileManager.exams[0].Subject.Name}\n");
                 Console.WriteLine();
-                return exams[0];
+                return FileManager.exams[0];
             }
 
             Console.Clear();
             Console.WriteLine($"\n{stars}{tabs}\tSelect an Exam\n{stars}");
 
-            for (int i = 0; i < exams.Count; i++)
+            for (int i = 0; i < FileManager.exams.Count; i++)
             {
-                Console.WriteLine($"{tabs}{i + 1}) {exams[i].Subject.Name} - {exams[i].Subject.Code}");
-                Console.WriteLine($"{tabs}   Instructor: Eng.{exams[i].Subject.Instructor}");
-                Console.WriteLine($"{tabs}   Questions: {exams[i].QuestionsNumber}, Time: {exams[i].Time} minutes\n");
+                Console.WriteLine($"{tabs}{i + 1}) {FileManager.exams[i].Subject.Name} - {FileManager.exams[i].Subject.Code}");
+                Console.WriteLine($"{tabs}   Instructor: Eng.{FileManager.exams[i].Subject.Instructor}");
+                Console.WriteLine($"{tabs}   Questions: {   FileManager.exams[i].QuestionsNumber}, Time: {FileManager.exams[i].Time} minutes\n");
             }
 
             int choice;
             do
             {
-                Helpers.WriteWithIndent($"Choose an exam (1 to {exams.Count}): ");
-            } while (!int.TryParse(Console.ReadLine(), out choice) || choice < 1 || choice > exams.Count);
+                Helpers.WriteWithIndent($"Choose an exam (1 to {FileManager.exams.Count}): ");
+            } while (!int.TryParse(Console.ReadLine(), out choice) || choice < 1 || choice > FileManager.exams.Count);
 
-            return exams[choice - 1];
+            return FileManager.exams[choice - 1];
         }
 
         static void CreateExam()
@@ -286,7 +291,8 @@
             int questionsNumber = GetQuestionsNumber();
             Exam exam = new(time, subject, questionsNumber);
             AddQuestionsToExam(exam, questionsNumber);
-            exams.Add(exam);
+            FileManager.exams.Add(exam);
+            FileManager.SaveExams();
             Helpers.WriteWithIndent("Exam created successfully!\n");
             Thread.Sleep(1500);
             Console.ReadLine();

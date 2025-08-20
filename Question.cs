@@ -35,7 +35,7 @@
 
     }
 
-    internal class ChooseOneQuestion : Question
+    public class ChooseOneQuestion : Question
     {
         public string[] options;
         int correctOptionIndex;
@@ -64,7 +64,7 @@
 
 
     }
-    internal class ChooseAllQuestion : Question
+    public class ChooseAllQuestion : Question
     {
         string[] options;
         int[] correctOptionIndices;
@@ -104,7 +104,7 @@
 
 
     }
-    internal class TrueOrFalseQuestion : Question
+    public class TrueOrFalseQuestion : Question
     {
         string answer;
         public string Answer
